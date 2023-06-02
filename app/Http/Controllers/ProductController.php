@@ -21,12 +21,29 @@ class ProductController extends Controller
         if(request()->ajax()) {
 
             $query = Products::query();
+            
+            return DataTables::of($query)
+            ->addColumn('action', function($item){
+                return '
+                <a href="' . route('dashboard.product.edit', $item->id) .'" class=" bg-green-400 hover:bg-green-700
+                text-white font-bold py-1 px-3 rounded shadow-lg">
+                  Edit
+                </a>
 
-            return DataTables::of($query)->editColumn('price', function($item){
+                <form class="inline-block" action="' . route('dashboard.product.destroy', $item->id) .'" method="POST"> 
+                <button class="bg-red-400 hover:bg-red-700 text-white font-bold py-1 px-2 m-2 rounded-md shadow-lg">
+                Hapus
+                </button>
+                '. method_field('delete') . csrf_field() .'
+                 </form>
 
+                ';
+            })
+            ->editColumn('price', function($item){
             return number_format($item->price);
-
-            })->make();
+            })
+            ->rawColumns(['action'])
+            ->make();
         }
         return view('pages.dashboard.product.index');
     }
@@ -51,8 +68,11 @@ class ProductController extends Controller
      public function store(ProductRequest $request)
     {
         $data = $request->all();
+
         $data['slug'] = Str::slug($request->title);
+
         Products::create($data);
+
         return redirect()->route('dashboard.product.index');
     }
 
@@ -73,9 +93,9 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Products $product)
     {
-        //
+        return view('pages.dashboard.product.edit', compact('product'));
     }
 
     /**
@@ -85,9 +105,15 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, Products $product)
     {
-        //
+        $data = $request->all();
+
+        $data['slug'] = Str::slug($request->title);
+
+        $product->update($data);
+
+        return redirect()->route('dashboard.product.index');
     }
 
     /**
@@ -96,8 +122,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Products $product)
     {
-        //
+        $product->delete();
+
+        return redirect()->route('dashboard.product.index');
     }
 }
