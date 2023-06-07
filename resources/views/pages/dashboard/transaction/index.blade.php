@@ -1,13 +1,14 @@
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Products') }}
+            {{ __('Transaction') }}
         </h2>
     </x-slot>
 
     <!-- Ajax Datatable -->
 
-    <x-slot name="script">
+     <x-slot name="script">
         <script>
             // AJAX DataTable
             var datatable = $('#crudTable').DataTable({
@@ -16,9 +17,11 @@
                 },
                 columns: [
                     { data: 'id', name: 'id', width: '5%'},
-                    { data: 'title', name: 'title' },
-                    { data: 'price', name: 'price' },
-                    { data: 'quantity', name: 'quantity'},
+                    { data: 'name', name: 'name' },
+                    { data: 'courier', name: 'courier' },
+                    { data: 'payment', name: 'payment' },
+                    { data: 'total_price', name: 'total_price' },
+                    { data: 'status', name: 'status' },
                     {
                         data: 'action',
                         name: 'action',
@@ -33,12 +36,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="mb-10">
-                <a href="{{ route('dashboard.product.create') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow-lg">
-                    + Create a new product  
-                </a>
-            </div>
-
+        
             <div class="shadow overflow-hidden sm-rounded-md">
                 <div class="px-4 py-5 bg-white sm:p-6">
                     <table id="crudTable">
@@ -46,8 +44,10 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nama</th>
-                                <th>Harga</th>
-                                <th>Kuantitas</th>
+                                <th>Kurir</th>
+                                <th>Pembayaran</th>
+                                <th>Total</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
