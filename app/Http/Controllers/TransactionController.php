@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transactions;
 use App\Models\TransactionItems;
+use App\Http\Requests\TransactionRequest;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
@@ -23,11 +24,11 @@ class TransactionController extends Controller
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
                     return '
-                        <a class="inline-block border border-blue-700 bg-blue-700 text-white rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-blue-800 focus:outline-none focus:shadow-outline" 
+                        <a class="inline-block border border-blue-400 bg-blue-400 text-white font-bold rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-blue-700 focus:outline-none focus:shadow-outline" 
                             href="' . route('dashboard.transaction.show', $item->id) . '">
                             Show
                         </a>
-                        <a class="inline-block border border-gray-700 bg-gray-700 text-white rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline" 
+                        <a class="inline-block border border-gray-400 bg-gray-400 text-white font-bold rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-gray-700 focus:outline-none focus:shadow-outline" 
                             href="' . route('dashboard.transaction.edit', $item->id) . '">
                             Edit
                         </a>';
@@ -92,9 +93,11 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Transactions $transaction)
     {
-        //
+        return view('pages.dashboard.transaction.edit',[
+            'item' => $transaction
+        ]);
     }
 
     /**
@@ -104,9 +107,13 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TransactionRequest $request, Transactions $transaction)
     {
-        //
+        $data = $request->all();
+
+        $transaction->update($data);
+
+        return redirect()->route('dashboard.transaction.index');
     }
 
     /**
